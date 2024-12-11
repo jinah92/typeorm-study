@@ -26,7 +26,45 @@ export class AppController {
 
   @Get('users')
   getUsers() {
-    return this.userRepository.find({});
+    return this.userRepository.find({
+      // 어떤 프로퍼티를 선택할지 결정 (default: 모든 프로퍼티)
+      // 만약 select을 정의하면, 정의된 프로퍼티만 가져온다
+      select: {
+        id: true,
+        createdAt: true,
+        updatedAt: true,
+        version: true,
+        profile: {
+          id: true,
+        },
+      },
+      // 필터링 조건 (AND: 객체, OR: 배열)
+      where: [
+        {
+          id: 1,
+        },
+        {
+          version: 1,
+        },
+      ],
+      // where: {
+      //   id: 1,
+      //   version: 1,
+      // },
+
+      // 관계를 가져옴
+      relations: {
+        profile: true,
+      },
+      // 정렬 (ASC: 오름차순, DESC: 내림차순)
+      order: {
+        id: 'DESC',
+      },
+      // 처음 몇개를 제외할지 (default: 0)
+      skip: 0,
+      // 몇개를 가져올지 (default: 0)
+      take: 2,
+    });
   }
 
   @Patch('users/:id')
@@ -38,6 +76,7 @@ export class AppController {
     });
     return this.userRepository.save({
       ...user,
+      email: user.email + '0',
     });
   }
 
