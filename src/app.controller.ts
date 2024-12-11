@@ -1,7 +1,20 @@
 import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role, UserModel } from './entity/user.entity';
-import { Repository } from 'typeorm';
+import {
+  Between,
+  Equal,
+  ILike,
+  In,
+  IsNull,
+  LessThan,
+  LessThanOrEqual,
+  Like,
+  MoreThan,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 import { ProfileModel } from './entity/profile.entity';
 import { PostModel } from './entity/post.entity';
 import { TagModel } from './entity/tag.entity';
@@ -34,19 +47,35 @@ export class AppController {
         createdAt: true,
         updatedAt: true,
         version: true,
+        email: true,
         profile: {
           id: true,
         },
       },
+      /** typeorm utilies */
+      where: {
+        // id: Not(3) // 아닌 경우
+        // id: LessThan(4) // 적은 경우
+        // id: LessThanOrEqual(4) // 적거나 같은 경우
+        // id: MoreThan(3) // 많은 경우
+        // id: MoreThanOrEqual(3) // 많거나 같은 경우
+        // id: Equal(3), // 같은 경우
+        // email: Like('%%AI0') // 유사값 (대소문자 구분)
+        // email: ILike('%%AI0') // 유사값 (대소문자 구분 X)
+        // id: Between(3, 4) // 사이값
+        // id: In([1, 3]) // 해당되는 값
+        // id: IsNull() // null인 값
+      },
+
       // 필터링 조건 (AND: 객체, OR: 배열)
-      where: [
-        {
-          id: 1,
-        },
-        {
-          version: 1,
-        },
-      ],
+      // where: [
+      //   {
+      //     id: 1,
+      //   },
+      //   {
+      //     version: 1,
+      //   },
+      // ],
       // where: {
       //   id: 1,
       //   version: 1,
@@ -63,7 +92,7 @@ export class AppController {
       // 처음 몇개를 제외할지 (default: 0)
       skip: 0,
       // 몇개를 가져올지 (default: 0)
-      take: 2,
+      take: 0,
     });
   }
 
